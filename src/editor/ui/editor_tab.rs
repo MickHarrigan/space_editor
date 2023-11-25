@@ -14,6 +14,7 @@ pub trait EditorTab {
 pub enum EditorTabName {
     Hierarchy,
     GameView,
+    CameraView,
     Inspector,
     ToolBox,
     Settings,

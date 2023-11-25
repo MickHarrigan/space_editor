@@ -20,6 +20,9 @@ pub use editor_tab::*;
 pub mod game_view;
 pub use game_view::*;
 
+pub mod camera_view;
+pub use camera_view::*;
+
 pub mod settings;
 pub use settings::*;
 
@@ -93,7 +96,13 @@ impl Plugin for EditorUiPlugin {
             Update,
             reset_camera_viewport.run_if(in_state(EditorState::Game)),
         );
+        app.add_systems(
+            Update,
+            reset_camera_tab_viewport.run_if(in_state(EditorState::Editor)),
+        );
+
         app.editor_tab_by_trait(EditorTabName::GameView, GameViewTab::default());
+        app.editor_tab_by_trait(EditorTabName::CameraView, CameraViewTab::default());
 
         app.editor_tab_by_trait(
             EditorTabName::Other("Debug World Inspector".to_string()),
@@ -111,7 +120,7 @@ impl Plugin for EditorUiPlugin {
 
         if self.use_standard_layout {
             let mut editor = app.world.resource_mut::<EditorUi>();
-            editor.tree = egui_dock::DockState::new(vec![EditorTabName::GameView]);
+            editor.tree = egui_dock::DockState::new(vec![EditorTabName::GameView, EditorTabName::CameraView]);
 
             let [_game, _inspector] = editor.tree.main_surface_mut().split_right(
                 egui_dock::NodeIndex::root(),
